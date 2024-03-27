@@ -1,0 +1,13 @@
+{
+  "author": "Kamil Kruczek",
+  "targets": ["omnifocus"],
+  "type": "action",
+  "identifier": "kamil.kruczek.Linking Task",
+  "version": "0.2.3",
+  "description": "A plug-in that...",
+  "label": "Linking Task",
+  "mediumLabel": "Linking Task",
+  "longLabel": "Linking Task",
+  "paletteLabel": "Linking Task",
+  "image": "link"
+}
