@@ -8,6 +8,7 @@
     "build": "tsc && npm run build:linking && npm run build:updateDates",
     "build:linking": "SCRIPT=linking vite build",
     "build:updateDates": "SCRIPT=updateDates vite build",
+    "copy-scripts": "bash copy-scripts.sh",
     "preview": "vite preview"
   },
   "devDependencies": {
