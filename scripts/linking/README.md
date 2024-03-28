@@ -1,1 +1,3 @@
-# test 2
+# Linking script
+
+More info soon

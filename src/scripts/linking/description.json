@@ -1,0 +1,13 @@
+{
+  "author": "Kamil Kruczek",
+  "targets": ["omnifocus"],
+  "type": "action",
+  "identifier": "kamil.kruczek.Linking Task",
+  "version": "1.0.0",
+  "description": "A plug-in that links each tasks and projects to each other by adding link in description",
+  "label": "Linking Task and Projects",
+  "mediumLabel": "Linking Task and Projects",
+  "longLabel": "Linking Task and Projects",
+  "paletteLabel": "Linking Task and Projects",
+  "image": "link"
+}

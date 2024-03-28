@@ -1,0 +1,49 @@
+/*{
+  "author": "Kamil Kruczek",
+  "targets": ["omnifocus"],
+  "type": "action",
+  "identifier": "kamil.kruczek.Linking Task",
+  "version": "1.0.0",
+  "description": "A plug-in that links each tasks and projects to each other by adding link in description",
+  "label": "Linking Task and Projects",
+  "mediumLabel": "Linking Task and Projects",
+  "longLabel": "Linking Task and Projects",
+  "paletteLabel": "Linking Task and Projects",
+  "image": "link"
+}*/
+(() => {
+Calendar.current;
+Formatter.Date.withStyle(Formatter.Date.Style.Short, null);
+const copyToClipboard = (string) => {
+  Pasteboard.general.string = string;
+};
+const getLinkToTask = (primaryKey) => {
+  return `omnifocus:///task/${primaryKey}`;
+};
+const action = new PlugIn.Action((selection) => {
+  const tasks = [...selection.projects, ...selection.tasks];
+  if (tasks.length === 1) {
+    copyToClipboard(getLinkToTask(tasks[0].id.primaryKey));
+    return;
+  }
+  tasks.forEach((task) => {
+    tasks.forEach((task2) => {
+      if (task.id.primaryKey !== task2.id.primaryKey) {
+        const linkToTask = getLinkToTask(task2.id.primaryKey);
+        if (!task2.containingProject) {
+          task.note = `${task2.name} ${linkToTask}
+${task.note}`;
+        } else {
+          task.note = `${task2.containingProject.name}: ${task2.name} ${linkToTask}
+${task.note}`;
+        }
+      }
+    });
+  });
+});
+action.validate = function(selection) {
+  return selection.projects.length + selection.tasks.length >= 1;
+};
+
+return action;
+})();

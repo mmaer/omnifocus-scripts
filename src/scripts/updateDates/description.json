@@ -1,0 +1,13 @@
+{
+    "author": "Kamil Kruczek",
+    "targets": ["omnifocus"],
+    "type": "action",
+    "identifier": "kamil.kruczek.Update Dates",
+    "version": "0.2",
+    "description": "A plug-in that update due date and defer date",
+    "label": "Update dates",
+    "mediumLabel": "Update due and defer dates",
+    "longLabel": "Update due date and defer date",
+    "paletteLabel": "Update dates",
+    "image": "calendar.badge.plus"
+}

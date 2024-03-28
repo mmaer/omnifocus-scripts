@@ -750,7 +750,7 @@ declare class Form {
     show(title: string, confirmTitle: string): Promise<Form>;
     readonly fields: Array<Form.Field>;
     validate: Function | null;
-    readonly values: Object;
+    readonly values: any;
 }
 
 // Form.Field

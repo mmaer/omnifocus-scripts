@@ -1,12 +1,15 @@
 import fs from "fs";
+import path from "path";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import eslint from "vite-plugin-eslint";
 import copy from "rollup-plugin-copy";
 
-import path from "path";
+const { SCRIPT = "" } = process.env;
 
-const scripts = ["linking"];
+const scripts = [SCRIPT];
+
+const scriptDir = "./src/scripts/";
 
 export default defineConfig({
   plugins: [tsconfigPaths(), eslint()],
@@ -16,9 +19,9 @@ export default defineConfig({
     outDir: "scripts",
     rollupOptions: {
       output: {
-        entryFileNames: (file) => `${file.facadeModuleId?.split("/").at(-2)}/[name].omnijs`
+        entryFileNames: (file) => `${file.facadeModuleId?.split("/").at(-2)}/[name].omnijs`,
       },
-      input: scripts.reduce((prev, next) => prev[next] = path.resolve(`./src/${next}/index.ts`), {}),
+      input: scripts.reduce((prev, next) => ({ ...prev, [next]: path.resolve(`${scriptDir}${next}/index.ts`)}), {}),
       plugins: [
         {
           name: "wrap-in-iife",
@@ -36,7 +39,7 @@ export default defineConfig({
           }
         },
         copy({
-          targets: scripts.map(name => ({ src: `src/${name}/README.md`, dest: `scripts/${name}` }))
+          targets: scripts.map(name => ({ src: `${scriptDir}${name}/README.md`, dest: `scripts/${name}` }))
         })
       ]
     }
