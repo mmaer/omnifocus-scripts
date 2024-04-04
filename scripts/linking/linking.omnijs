@@ -41,9 +41,7 @@ ${task.note}`;
     });
   });
 });
-action.validate = function(selection) {
-  return selection.projects.length + selection.tasks.length >= 1;
-};
+action.validate = (selection) => selection.projects.length + selection.tasks.length >= 1;
 
 return action;
 })();

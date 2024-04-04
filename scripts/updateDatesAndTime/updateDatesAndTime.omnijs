@@ -2,10 +2,10 @@
     "author": "Kamil Kruczek",
     "targets": ["omnifocus"],
     "type": "action",
-    "identifier": "kamil.kruczek.Update Dates",
+    "identifier": "kamil.kruczek.Update Dates and time",
     "version": "0.2",
     "description": "A plug-in that update due date and defer date",
-    "label": "Update dates",
+    "label": "Update dates and time",
     "mediumLabel": "Update due and defer dates",
     "longLabel": "Update due date and defer date",
     "paletteLabel": "Update dates",
@@ -20,20 +20,22 @@ const action = new PlugIn.Action(async ({ projects, tasks }) => {
   const selectedItems = [...projects, ...tasks];
   const inputForm = new Form();
   const field = new Form.Field.String("dateInput", "Data", null, null);
-  const field2 = new Form.Field.String("deferDateTimeInput", "Defer date", null, null);
-  const field3 = new Form.Field.String("dueDateTimeInput", "Due date", null, null);
+  const field2 = new Form.Field.String("deferDateTimeInput", "Defer time", null, null);
+  const field3 = new Form.Field.String("dueDateTimeInput", "Due time", null, null);
   inputForm.addField(field, null);
   inputForm.addField(field2, null);
   inputForm.addField(field3, null);
-  const { values } = await inputForm.show("", "Zaaktualizuj");
+  const { values } = await inputForm.show("", "Update");
   const { dateInput, dueDateTimeInput, deferDateTimeInput } = values;
   selectedItems.forEach((task) => {
     const dueDateTask = dateComponentsFromDate(task.dueDate);
     const deferDateTask = dateComponentsFromDate(task.deferDate);
-    const dueDate = dueDateTimeInput ? dueDateTimeInput : `${dueDateTask.hour}:${dueDateTask.minute}`;
-    const deferDate = deferDateTimeInput ? deferDateTimeInput : `${deferDateTask.hour}:${deferDateTask.minute}`;
-    task.dueDate = dateFromString(`${dateInput}, ${dueDate}`);
-    task.deferDate = dateFromString(`${dateInput}, ${deferDate}`);
+    const dueTime = dueDateTimeInput ? dueDateTimeInput : `${dueDateTask.hour}:${dueDateTask.minute}`;
+    const deferTime = deferDateTimeInput ? deferDateTimeInput : `${deferDateTask.hour}:${deferDateTask.minute}`;
+    const dueDate = dateInput ? dateInput : task.dueDate;
+    const deferDate = dateInput ? dateInput : task.deferDate;
+    task.dueDate = dateFromString(`${dueDate}, ${dueTime}`);
+    task.deferDate = dateFromString(`${deferDate}, ${deferTime}`);
   });
 });
 action.validate = ({ projects, tasks }) => projects.length + tasks.length >= 1;

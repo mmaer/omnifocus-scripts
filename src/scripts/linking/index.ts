@@ -1,4 +1,4 @@
-import { copyToClipboard, getLinkToTask } from "../../lib";
+import { copyToClipboard, getLinkToTask } from '../../lib';
 
 const action = new PlugIn.Action((selection: Selection) => { 
   const tasks = [...selection.projects, ...selection.tasks];
@@ -22,6 +22,4 @@ const action = new PlugIn.Action((selection: Selection) => {
   });
 });
 
-action.validate = function (selection: Selection) {
-  return selection.projects.length + selection.tasks.length >= 1;
-};
+action.validate = (selection: Selection) => selection.projects.length + selection.tasks.length >= 1;

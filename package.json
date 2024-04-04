@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && npm run build:linking && npm run build:updateDates",
+    "build": "tsc && npm run build:linking && npm run build:updateDatesAndTime",
     "build:linking": "SCRIPT=linking vite build",
-    "build:updateDates": "SCRIPT=updateDates vite build",
+    "build:updateDatesAndTime": "SCRIPT=updateDatesAndTime vite build",
     "copy-scripts": "bash copy-scripts.sh",
     "preview": "vite preview"
   },
