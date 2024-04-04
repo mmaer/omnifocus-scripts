@@ -1,0 +1,11 @@
+{
+	"type": "action",
+	"targets": ["omnifocus"],
+	"author": "Kamil Kruczek",
+	"identifier": "kamil.kruczek.Estimate Time",
+	"version": "0.1",
+	"description": "Estimates time",
+	"label": "Estimates time",
+	"shortLabel": "Estimates time",
+  "image": "hourglass"
+}
