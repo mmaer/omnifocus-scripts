@@ -1,0 +1,13 @@
+{
+  "author": "Kamil Kruczek",
+  "targets": ["omnifocus"],
+  "type": "action",
+  "identifier": "kamil.kruczek.Estimate days",
+  "version": "1.0.0",
+  "description": "Estimate days",
+  "label": "Estimate days",
+  "mediumLabel": "Estimate days",
+  "longLabel": "Estimate days",
+  "paletteLabel": "Estimate days",
+  "image": "calendar.circle"
+}

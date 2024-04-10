@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && npm run build:linking && npm run build:updateDatesAndTime && npm run build:estimateTime",
+    "build": "tsc && npm run build:linking && npm run build:updateDatesAndTime && npm run build:estimateTime && npm run build:estimateDays",
     "build:linking": "SCRIPT=linking vite build",
     "build:updateDatesAndTime": "SCRIPT=updateDatesAndTime vite build",
     "build:estimateTime": "SCRIPT=estimateTime vite build",
+    "build:estimateDays": "SCRIPT=estimateDays vite build",
     "copy-scripts": "bash copy-scripts.sh",
     "buildAndCopy": "npm run build && npm run copy-scripts",
     "preview": "vite preview"

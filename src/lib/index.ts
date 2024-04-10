@@ -21,6 +21,36 @@ export const formatMinutesToHours = (totalTime: number, type = 'full') => {
   const minutes = totalTime % 60;
 
   if (type === 'full') return `${hours === 0 ? '' : `${hours} hours `}${minutes} minutes`;
+  if (type === 'withZeros') return `${hours}h ${minutes > 9 ? minutes : `0${minutes}`}m`;
 
   return `${hours === 0 ? '' : `${hours}h`} ${minutes === 0 ? '' : `${minutes}m`}`;
+};
+
+export const addDays = (startDate: Date | string, days: number): Date | null => {
+  const date = new Date(startDate);
+  return cal.dateByAddingDateComponents(date, createDateComponent({ day: days }));
+};
+
+export const getRangeOfDatesBetween = (date1: Date | string, date2: Date | string) => {
+  const dateArray = [];
+  let currentDate = date1;
+
+  while (currentDate <= date2) {
+    dateArray.push(new Date(currentDate));
+    currentDate = addDays(currentDate, 1);
+  }
+  return dateArray;
+};
+
+export const createDateComponent = ({ day, hour, minute }: { day?: number, hour?: number, minute?: number }) => {
+  const dc = new DateComponents();
+  if (day) dc.day = day;
+  if (hour) dc.hour = hour;
+  if (minute) dc.minute = minute;
+  return dc;
+};
+
+export const shiftDateBy = (date: Date | null, shiftDate: { day: number, hour: number, minute: number }) => {
+  if (date === null) return;
+  return cal.dateByAddingDateComponents(date, createDateComponent(shiftDate));
 };
