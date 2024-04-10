@@ -222,6 +222,8 @@ declare class Data {
 
 // Database
 
+declare const flattenedTasks: TaskArray;
+
 declare class Database {
     tagNamed(name: string): Tag | null;
     folderNamed(name: string): Folder | null;

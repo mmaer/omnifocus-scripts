@@ -17,6 +17,8 @@ const formatMinutesToHours = (totalTime, type = "full") => {
   const minutes = totalTime % 60;
   if (type === "full")
     return `${hours === 0 ? "" : `${hours} hours `}${minutes} minutes`;
+  if (type === "withZeros")
+    return `${hours}h ${minutes > 9 ? minutes : `0${minutes}`}m`;
   return `${hours === 0 ? "" : `${hours}h`} ${minutes === 0 ? "" : `${minutes}m`}`;
 };
 const action = new PlugIn.Action((selection) => {
