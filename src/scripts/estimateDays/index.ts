@@ -1,4 +1,5 @@
 import { dateFromString, formatMinutesToHours, getRangeOfDatesBetween, addDays } from '../../lib';
+import { settings, getTotalTimeToEstimate } from './settings';
 
 const OPTIONS = {
   morningStartTime: '00:00',
@@ -7,7 +8,6 @@ const OPTIONS = {
   afternoonEndTime: '18:00',
   eveningStartTime: '18:00',
   eveningEndTime: '23:00',
-  totalTimeToEstimate: 240,
 };
 
 const isInTimeRange = (timeStart: string, timeEnd: string) => (date: Date, dueDate: Formatter.Date) => {
@@ -27,7 +27,7 @@ const updateDay = (
   dayDate: Date, 
   dueDate: Formatter.Date, 
   estimatedMinutes: number, 
-  day: { morningTime: number, afternoonTime: number, eveningTime: number },
+  day: { morningTime: number, afternoonTime: number, eveningTime: number, totalTime: number },
   morningRange: (day: Date, dueDate: Formatter.Date) => boolean,
   afternoonRange: (day: Date, dueDate: Formatter.Date) => boolean,
   eveningRange: (day: Date, dueDate: Formatter.Date) => boolean,
@@ -35,36 +35,45 @@ const updateDay = (
   return {
     morningTime: morningRange(dayDate, dueDate) ? day.morningTime + estimatedMinutes : day.morningTime,
     afternoonTime: afternoonRange(dayDate, dueDate) ? day.afternoonTime + estimatedMinutes : day.afternoonTime,
-    eveningTime: eveningRange(dayDate, dueDate) ? day.eveningTime + estimatedMinutes : day.eveningTime
+    eveningTime: eveningRange(dayDate, dueDate) ? day.eveningTime + estimatedMinutes : day.eveningTime,
+    totalTime: day.totalTime + estimatedMinutes
   };
 };
 
-const options = ['This week', 'Next week'];
-
-const predefinedDatesOptions = {
-  [options[0]]: {
-    startDate: dateFromString('this monday'),
-    endDate: dateFromString('next sunday'),
-  },
-  [options[1]]: {
+const predefinedDates = {
+  ['Next week']: {
     startDate: dateFromString('next monday'),
     endDate: dateFromString('next sunday +7d'),
+  },
+  ['This week']: {
+    startDate: dateFromString('this monday'),
+    endDate: dateFromString('next sunday'),
   }
-};
+} as { [k: string]: { startDate: Formatter.Date, endDate: Formatter.Date } } ;
+
+const predefinedDatesOptions = Object.keys(predefinedDates);
 
 const action = new PlugIn.Action(async () => {
-  const { morningStartTime, morningEndTime, afternoonStartTime, afternoonEndTime, eveningStartTime, eveningEndTime, totalTimeToEstimate } = OPTIONS;
+
+  if (app.optionKeyDown) {
+    await settings();
+    return;
+  }
+
+  const { morningStartTime, morningEndTime, afternoonStartTime, afternoonEndTime, eveningStartTime, eveningEndTime } = OPTIONS;
+  const totalTimeToEstimate = getTotalTimeToEstimate();
   const fmtr = Formatter.Date.withStyle(Formatter.Date.Style.Short, null);
   const inputForm = new Form();
   const startDateField = new Form.Field.Date('startDate', 'Start date', null, fmtr);
   const endDateField = new Form.Field.Date('endDate', 'End date', null, fmtr);
-  const predefinedDatesField = new Form.Field.Option('predefinedDates', 'Predefined dates', [0, 1], options, 0, null);
+
+  const predefinedDatesField = new Form.Field.Option('predefinedDatesIndex', 'Predefined dates', [0, 1], predefinedDatesOptions, 0, null);
 
   inputForm.addField(predefinedDatesField, null);
   inputForm.addField(startDateField, null);
   inputForm.addField(endDateField, null);
 
-  const { values: { startDate, endDate, predefinedDates } } = await inputForm.show('Select date range', 'Ok');
+  const { values: { startDate, endDate, predefinedDatesIndex } } = await inputForm.show('Select date range', 'Ok');
 
   let startDateRange;
   let endDateRange;
@@ -73,8 +82,8 @@ const action = new PlugIn.Action(async () => {
     startDateRange = startDate;
     endDateRange = endDate;
   } else {
-    startDateRange = predefinedDatesOptions[options[predefinedDates]].startDate;
-    endDateRange = predefinedDatesOptions[options[predefinedDates]].endDate; 
+    startDateRange = predefinedDates[predefinedDatesOptions[predefinedDatesIndex]].startDate;
+    endDateRange = predefinedDates[predefinedDatesOptions[predefinedDatesIndex]].endDate; 
   }
 
   const taskToCount = flattenedTasks.filter(({ effectiveDueDate, taskStatus, estimatedMinutes }) => {
@@ -87,7 +96,8 @@ const action = new PlugIn.Action(async () => {
     prev[date.toString()] = {
       morningTime: 0,
       afternoonTime: 0,
-      eveningTime: 0
+      eveningTime: 0,
+      totalTime: 0
     };
     return prev;
   }, {} as { [k: string]: unknown });
@@ -109,30 +119,24 @@ const action = new PlugIn.Action(async () => {
   }, rangeOfDates);
 
   const estimatedTimeDesc = Object.keys(days).map(day => {
-    const morningTime = formatMinutesToHours(days[day].morningTime, 'withZeros');
-    const afternoonTime = formatMinutesToHours(days[day].afternoonTime, 'withZeros');
-    const eveningTime = formatMinutesToHours(days[day].eveningTime, 'withZeros');
+    const totalTime = formatMinutesToHours(days[day].totalTime, 'withZeros');
 
-    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${morningTime} - ${afternoonTime} - ${eveningTime}`;
+    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime}`;
   });
 
-  const leftTimeDesc = Object.keys(days).map(day => {
-    const morningLeftTime = totalTimeToEstimate - days[day].morningTime;
-    const afternoonLeftTime = totalTimeToEstimate - days[day].afternoonTime;
-    const eveningLeftTime = totalTimeToEstimate - days[day].eveningTime;
+  const leftTimeDaysDesc = Object.keys(days).map(day => {
+    const totalLeftTime = totalTimeToEstimate - days[day].totalTime;
 
-    const morningTime = morningLeftTime > 0 ? formatMinutesToHours(morningLeftTime, 'withZeros') : '';
-    const afternoonTime = afternoonLeftTime > 0 ? formatMinutesToHours(afternoonLeftTime, 'withZeros') : '';
-    const eveningTime = eveningLeftTime > 0 ? formatMinutesToHours(eveningLeftTime, 'withZeros') : '';
+    const totalTime = totalLeftTime > 0 ? formatMinutesToHours(totalLeftTime, 'withZeros') : '';
 
-    if (!morningTime && !afternoonTime && !eveningTime) {
-      return '';
-    }
+    if (!totalTime) return '';
 
-    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${morningTime}${afternoonTime === '' ? '' : ` - ${afternoonTime}`}${eveningTime === '' ? '' : ` - ${eveningTime}`}`;
+    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime}`;
   });
 
-  const desc = `${estimatedTimeDesc.join('\n')}\n\nLeft time:\n${leftTimeDesc.join('\n')}`;
+  const leftTimeDesc = totalTimeToEstimate ? `\n\nLeft time to estimate(${formatMinutesToHours(totalTimeToEstimate, 'withZeros')}):${leftTimeDaysDesc.join('\n')}` : '';
+
+  const desc = `${estimatedTimeDesc.join('\n')}${leftTimeDesc}`;
 
   const alert = new Alert('Estimated days:', desc);
   alert.show(null);
