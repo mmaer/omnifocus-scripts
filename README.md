@@ -1,9 +1,21 @@
 # Omnifocus Scripts
 
-## Prerequisites
+## Scripts
+
+[Estimate Days](./scripts/estimateDays)
+
+[Estimate Time](./scripts/estimateTime)
+
+[Linking](./scripts/linking/)
+
+[Update Dates And Time](./scripts/updateDatesAndTime/)
+
+## Set up projects
+
+### Prerequisites
 - Installed node
 
-## Set up
+### Set up 
 
 1. Run `cp .env.sample .env` in terminal
 2. Run `npm install`

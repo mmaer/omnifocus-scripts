@@ -1,5 +1,7 @@
 # Estimate days
 
+[Install plugin](omnifocus:///omnijs-install?path=https://github.com/mmaer/omnifocus-scripts/raw/update_readme/scripts/estimateDays/estimateDays.omnifocusjs.zip)
+
 Select a predefined date range or select your ones to get an estimated time in the given date range.
 
 Alert displays estimated time and left time to estimate, split into morning afternoon, and evening parts of the day.

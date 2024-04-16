@@ -4,12 +4,13 @@ import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import eslint from 'vite-plugin-eslint';
 import copy from 'rollup-plugin-copy';
+import { viteZip } from 'vite-plugin-zip-file';
 
 const { SCRIPT = '' } = process.env;
 
 const scripts = [SCRIPT];
-
 const scriptDir = './src/scripts/';
+const omniFocusExtension = 'omnifocusjs';
 
 export default defineConfig({
   plugins: [tsconfigPaths(), eslint()],
@@ -19,7 +20,7 @@ export default defineConfig({
     outDir: 'scripts',
     rollupOptions: {
       output: {
-        entryFileNames: (file) => `${file.facadeModuleId?.split('/').at(-2)}/[name].omnijs`,
+        entryFileNames: (file) => `${file.facadeModuleId?.split('/').at(-2)}/[name].${omniFocusExtension}`,
       },
       input: scripts.reduce((prev, next) => ({ ...prev, [next]: path.resolve(`${scriptDir}${next}/index.ts`)}), {}),
       plugins: [
@@ -29,7 +30,7 @@ export default defineConfig({
             Object.keys(bundle).forEach(fileName => {
               const file = bundle[fileName];
 
-              if (fileName.includes('.omnijs') && 'code' in file) {
+              if (fileName.includes(`.${omniFocusExtension}`) && 'code' in file) {
                 const commentPath = [...(file.facadeModuleId ? file.facadeModuleId : '').split('/').slice(0, -1), 'description.json'].join('/');
                 const commentfile = fs.readFileSync(commentPath, 'utf-8');
 
@@ -40,6 +41,12 @@ export default defineConfig({
         },
         copy({
           targets: scripts.map(name => ({ src: `${scriptDir}${name}/README.md`, dest: `scripts/${name}` }))
+        }),
+        viteZip({
+          folderPath: path.resolve(__dirname, `scripts/${SCRIPT}`),
+          outPath: path.resolve(__dirname, `scripts/${SCRIPT}`),
+          zipName: `${SCRIPT}.zip`,
+          enabled: true
         })
       ]
     }

@@ -1,5 +1,7 @@
 # Linking script
 
+[Install plugin](omnifocus:///omnijs-install?path=https://github.com/mmaer/omnifocus-scripts/raw/update_readme/scripts/linking/linking.omnifocusjs.zip)
+
 Script links one another task by adding URLs in descriptions.
 
 ## How to use
