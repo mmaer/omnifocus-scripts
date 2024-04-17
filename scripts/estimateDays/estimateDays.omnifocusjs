@@ -5,10 +5,10 @@
   "identifier": "kamil.kruczek.Estimate days",
   "version": "1.0.0",
   "description": "Select a predefined date range or select your ones to get an estimated time in the given date range.",
-  "label": "Estimate days",
-  "mediumLabel": "Estimate days",
-  "longLabel": "Estimate days",
-  "paletteLabel": "Estimate days",
+  "label": "Estimate days1",
+  "mediumLabel": "Estimate days2",
+  "longLabel": "Estimate days3",
+  "paletteLabel": "Estimate days4",
   "image": "calendar.circle"
 }*/
 (() => {
