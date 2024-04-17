@@ -2,7 +2,7 @@
 	"type": "action",
 	"targets": ["omnifocus"],
 	"author": "Kamil Kruczek",
-	"identifier": "kamil.kruczek.Estimate Time",
+	"identifier": "kamil.kruczek.estimateTime",
 	"version": "1.0.0",
 	"description": "Estimate all selected tasks and projects.",
 	"label": "Estimates time1",

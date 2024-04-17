@@ -2,7 +2,7 @@
   "author": "Kamil Kruczek",
   "targets": ["omnifocus"],
   "type": "action",
-  "identifier": "kamil.kruczek.Linking",
+  "identifier": "kamil.kruczek.linking",
   "version": "1.0.0",
   "description": "Links one another task by adding URLs in note.",
   "label": "Linking Task and Projects",

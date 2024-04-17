@@ -2,7 +2,7 @@
     "author": "Kamil Kruczek",
     "targets": ["omnifocus"],
     "type": "action",
-    "identifier": "kamil.kruczek.Update Dates and time",
+    "identifier": "kamil.kruczek.updateDatesAndTime",
     "version": "1.0.0",
     "description": "Update date, defer time and due time in selected tasks. In date field, you can put the date or shortcut date(+1 day, +1 week, +1 month, +1 year, 2d, –3w, 1h, 1y).",
     "label": "Update dates and time",
