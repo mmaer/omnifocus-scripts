@@ -1,6 +1,6 @@
 # Omnifocus Scripts
 
-## Scripts
+## Plug-Ins 
 
 [Estimate Days](./scripts/estimateDays)
 
@@ -9,6 +9,12 @@
 [Linking](./scripts/linking/)
 
 [Update Dates And Time](./scripts/updateDatesAndTime/)
+
+If you have any issue or suggestion to update existing plug-in or create the new one. Feel free to reach me out.
+
+Mail: kamilkruczek0@gmail.com
+Omni Group Slack: Kamil Kruczek
+Omni Forums: kamilkruczek
 
 ## Set up projects
 
