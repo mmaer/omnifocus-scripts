@@ -4,7 +4,7 @@
   "type": "action",
   "identifier": "kamil.kruczek.Linking",
   "version": "1.0.0",
-  "description": "A plug-in that links each tasks and projects to each other by adding link in description",
+  "description": "Links one another task by adding URLs in note.",
   "label": "Linking Task and Projects",
   "mediumLabel": "Linking Task and Projects",
   "longLabel": "Linking Task and Projects",

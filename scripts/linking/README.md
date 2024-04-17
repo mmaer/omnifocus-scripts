@@ -2,7 +2,7 @@
 
 [Install plugin](omnifocus:///omnijs-install?path=https://github.com/mmaer/omnifocus-scripts/raw/update_readme/scripts/linking/linking.omnifocusjs.zip)
 
-Plug-in links one another task by adding URLs in note.
+Links one another task by adding URLs in note.
 
 ## How to use
 1. Select one or more tasks or projects.

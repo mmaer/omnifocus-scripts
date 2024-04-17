@@ -3,8 +3,8 @@
 	"targets": ["omnifocus"],
 	"author": "Kamil Kruczek",
 	"identifier": "kamil.kruczek.Estimate Time",
-	"version": "0.1",
-	"description": "Estimates time",
+	"version": "1.0.0",
+	"description": "Estimate all selected tasks and projects.",
 	"label": "Estimates time",
 	"shortLabel": "Estimates time",
   "image": "hourglass"

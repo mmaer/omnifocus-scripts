@@ -4,7 +4,7 @@
   "type": "action",
   "identifier": "kamil.kruczek.Estimate days",
   "version": "1.0.0",
-  "description": "Estimate days",
+  "description": "Select a predefined date range or select your ones to get an estimated time in the given date range.",
   "label": "Estimate days",
   "mediumLabel": "Estimate days",
   "longLabel": "Estimate days",

@@ -2,7 +2,7 @@
 
 [Install plugin](omnifocus:///omnijs-install?path=https://github.com/mmaer/omnifocus-scripts/raw/update_readme/scripts/estimateDays/estimateDays.omnifocusjs.zip)
 
-Estimate all selected tasks and projects
+Estimate all selected tasks and projects.
 
 ## In the future
 
