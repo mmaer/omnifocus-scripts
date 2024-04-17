@@ -1,6 +1,6 @@
 # Estimate days
 
-[Install plugin](omnifocus:///omnijs-install?path=https://github.com/mmaer/omnifocus-scripts/raw/update_readme/scripts/estimateDays/estimateDays.omnifocusjs.zip)
+[Install plugin](omnifocus:///omnijs-install?path=https://github.com/mmaer/omnifocus-scripts/raw/update_readme/scripts/estimateDays/estimateDays.zip)
 
 Select a predefined date range or select your ones to get an estimated time in the given date range.
 

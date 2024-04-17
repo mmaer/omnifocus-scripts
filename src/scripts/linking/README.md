@@ -1,6 +1,6 @@
 # Linking
 
-[Install plugin](omnifocus:///omnijs-install?path=https://github.com/mmaer/omnifocus-scripts/raw/update_readme/scripts/linking/linking.omnifocusjs.zip)
+[Install plugin](omnifocus:///omnijs-install?path=https://github.com/mmaer/omnifocus-scripts/raw/update_readme/scripts/linking/linking.zip)
 
 Links one another task by adding URLs in note.
 
