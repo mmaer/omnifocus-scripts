@@ -5,7 +5,7 @@
 	"identifier": "kamil.kruczek.estimateTime",
 	"version": "1.0.0",
 	"description": "Estimate all selected tasks and projects.",
-	"label": "Estimates time1",
-	"shortLabel": "Estimates time2",
+	"label": "Estimates time",
+	"shortLabel": "Estimates time",
   "image": "hourglass"
 }
