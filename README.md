@@ -1,4 +1,6 @@
-# Omnifocus Scripts
+# Omnifocus Plug-Ins
+
+[Github repo](https://github.com/mmaer/omnifocus-scripts)
 
 ## Plug-Ins 
 
