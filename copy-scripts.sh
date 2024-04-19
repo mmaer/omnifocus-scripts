@@ -1,6 +1,20 @@
 source .env
 
-cp scripts/linking/linking.omnifocusjs "${OMNI_FOCUS_SCRIPT_FOLDER}/linking.omnijs"
-cp scripts/updateDatesAndTime/updateDatesAndTime.omnifocusjs "${OMNI_FOCUS_SCRIPT_FOLDER}/updateDatesAndTime.omnijs"
-cp scripts/estimateTime/estimateTime.omnifocusjs "${OMNI_FOCUS_SCRIPT_FOLDER}/estimateTime.omnijs"
-cp scripts/estimateDays/estimateDays.omnifocusjs "${OMNI_FOCUS_SCRIPT_FOLDER}/estimateDays.omnijs"
+# Check if directory path is provided as argument
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <directory>"
+  exit 1
+fi
+
+# Check if the provided path is a directory
+if [ ! -d "$1" ]; then
+  echo "$1 is not a directory"
+  exit 1
+fi
+
+for folder in "$1"/*; do
+  if [ -d "$folder" ]; then
+    echo "Copy script: $(basename "$folder")"
+    cp scripts/$(basename "$folder")/$(basename "$folder").omnifocusjs "${OMNI_FOCUS_SCRIPT_FOLDER}/$(basename "$folder").omnijs"
+  fi
+done
