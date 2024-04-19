@@ -3,7 +3,7 @@
   "targets": ["omnifocus"],
   "type": "action",
   "identifier": "kamil.kruczek.estimateDays",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Select a predefined date range or select your ones to get an estimated time in the given date range.",
   "label": "Estimate days",
   "mediumLabel": "Estimate days",
@@ -158,21 +158,29 @@ const action = new PlugIn.Action(async () => {
     });
     return prev;
   }, rangeOfDates);
+  let totalTime = 0;
   const estimatedTimeDesc = Object.keys(days).map((day) => {
-    const totalTime = formatMinutesToHours(days[day].totalTime, "withZeros");
-    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime}`;
+    const totalDayTime = formatMinutesToHours(days[day].totalTime, "withZeros");
+    totalTime += days[day].totalTime;
+    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalDayTime}`;
   });
+  let totalLeftTime = 0;
   const leftTimeDaysDesc = Object.keys(days).map((day) => {
-    const totalLeftTime = totalTimeToEstimate - days[day].totalTime;
-    const totalTime = totalLeftTime > 0 ? formatMinutesToHours(totalLeftTime, "withZeros") : "";
-    if (!totalTime)
+    const totalDayLeftTime = totalTimeToEstimate - days[day].totalTime;
+    const totalTime2 = totalDayLeftTime > 0 ? formatMinutesToHours(totalDayLeftTime, "withZeros") : "";
+    totalLeftTime += totalDayLeftTime > 0 ? totalDayLeftTime : 0;
+    if (!totalTime2)
       return "";
-    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime}`;
+    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime2}`;
   });
-  const leftTimeDesc = totalTimeToEstimate ? `
+  const totalTimeDesc = `Total time: ${formatMinutesToHours(totalTime, "withZeros")}`;
+  const totalLeftTimeDesc = `Total left time: ${formatMinutesToHours(totalLeftTime, "withZeros")}`;
+  const leftTimeDesc = totalTimeToEstimate ? `Left time to estimate (per day ${formatMinutesToHours(totalTimeToEstimate, "withZeros")}):${leftTimeDaysDesc.join("\n")}
+${totalLeftTimeDesc}` : "";
+  const desc = `${estimatedTimeDesc.join("\n")}
+${totalTimeDesc}
 
-Left time to estimate(${formatMinutesToHours(totalTimeToEstimate, "withZeros")}):${leftTimeDaysDesc.join("\n")}` : "";
-  const desc = `${estimatedTimeDesc.join("\n")}${leftTimeDesc}`;
+${leftTimeDesc}`;
   const alert = new Alert("Estimated days:", desc);
   alert.show(null);
 });
