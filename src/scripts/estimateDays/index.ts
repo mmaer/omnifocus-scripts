@@ -118,25 +118,31 @@ const action = new PlugIn.Action(async () => {
     return prev;
   }, rangeOfDates);
 
+  let totalTime = 0;
   const estimatedTimeDesc = Object.keys(days).map(day => {
-    const totalTime = formatMinutesToHours(days[day].totalTime, 'withZeros');
+    const totalDayTime = formatMinutesToHours(days[day].totalTime, 'withZeros');
+    totalTime += days[day].totalTime;
 
-    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime}`;
+    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalDayTime}`;
   });
 
+  let totalLeftTime = 0;
   const leftTimeDaysDesc = Object.keys(days).map(day => {
-    const totalLeftTime = totalTimeToEstimate - days[day].totalTime;
+    const totalDayLeftTime = totalTimeToEstimate - days[day].totalTime;
 
-    const totalTime = totalLeftTime > 0 ? formatMinutesToHours(totalLeftTime, 'withZeros') : '';
-
+    const totalTime = totalDayLeftTime > 0 ? formatMinutesToHours(totalDayLeftTime, 'withZeros') : '';
+    totalLeftTime += totalDayLeftTime > 0 ? totalDayLeftTime : 0;
+    
     if (!totalTime) return '';
 
     return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime}`;
   });
 
-  const leftTimeDesc = totalTimeToEstimate ? `\n\nLeft time to estimate(${formatMinutesToHours(totalTimeToEstimate, 'withZeros')}):${leftTimeDaysDesc.join('\n')}` : '';
+  const totalTimeDesc = `Total time: ${formatMinutesToHours(totalTime, 'withZeros')}`;
+  const totalLeftTimeDesc = `Total left time: ${formatMinutesToHours(totalLeftTime, 'withZeros')}`;
+  const leftTimeDesc = totalTimeToEstimate ? `Left time to estimate (per day ${formatMinutesToHours(totalTimeToEstimate, 'withZeros')}):${leftTimeDaysDesc.join('\n')}\n${totalLeftTimeDesc}` : '';
 
-  const desc = `${estimatedTimeDesc.join('\n')}${leftTimeDesc}`;
+  const desc = `${estimatedTimeDesc.join('\n')}\n${totalTimeDesc}\n\n${leftTimeDesc}`;
 
   const alert = new Alert('Estimated days:', desc);
   alert.show(null);

@@ -3,7 +3,7 @@
   "targets": ["omnifocus"],
   "type": "action",
   "identifier": "kamil.kruczek.estimateDays",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Select a predefined date range or select your ones to get an estimated time in the given date range.",
   "label": "Estimate days",
   "mediumLabel": "Estimate days",
