@@ -40,7 +40,10 @@ export default defineConfig({
           }
         },
         copy({
-          targets: scripts.map(name => ({ src: `${scriptDir}${name}/README.md`, dest: `scripts/${name}` }))
+          targets: [
+            { src: `${scriptDir}${SCRIPT}/README.md`, dest: `scripts/${SCRIPT}` },
+            { src: `${scriptDir}${SCRIPT}/assets/*`, dest: `scripts/${SCRIPT}/assets` }
+          ]
         }),
         viteZip({
           folderPath: path.resolve(__dirname, `scripts/${SCRIPT}`),

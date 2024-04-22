@@ -139,7 +139,7 @@ const action = new PlugIn.Action(async () => {
 
   const totalTimeDesc = `Total time: ${formatMinutesToHours(totalTime, 'withZeros')}`;
   const totalLeftTimeDesc = `Total left time: ${formatMinutesToHours(totalLeftTime, 'withZeros')}`;
-  const leftTimeDesc = totalTimeToEstimate ? `Left time to estimate (per day ${formatMinutesToHours(totalTimeToEstimate, 'withZeros')}):${leftTimeDaysDesc.join('\n')}\n${totalLeftTimeDesc}` : '';
+  const leftTimeDesc = totalTimeToEstimate ? `Left time to estimate (per day ${formatMinutesToHours(totalTimeToEstimate, 'withZeros')}):\n${leftTimeDaysDesc.filter(e => e).join('\n')}\n${totalLeftTimeDesc}` : '';
 
   const desc = `${estimatedTimeDesc.join('\n')}\n${totalTimeDesc}\n\n${leftTimeDesc}`;
 
