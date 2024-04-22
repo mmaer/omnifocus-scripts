@@ -1,0 +1,51 @@
+/*{
+	"type": "action",
+	"targets": ["omnifocus"],
+	"author": "Kamil Kruczek",
+	"identifier": "kamil.kruczek.leftTimeToday",
+	"version": "1.0.0",
+	"description": "Get information about how much time is left today",
+	"label": "Left time today",
+	"mediumLabel": "Left time today",
+  "longLabel": "Left time today",
+  "paletteLabel": "Left time today",
+  "image": "clock.arrow.circlepath"
+}*/
+(() => {
+Calendar.current;
+const fmatr = Formatter.Date.withStyle(Formatter.Date.Style.Short, null);
+const dateFromString = (date) => fmatr.dateFromString(date);
+const formatMinutesToHours = (totalTime, type = "full") => {
+  const hours = Math.floor(totalTime / 60);
+  const minutes = totalTime % 60;
+  if (type === "full")
+    return `${hours === 0 ? "" : `${hours} hours `}${minutes} minutes`;
+  if (type === "withZeros")
+    return `${hours}h ${minutes > 9 ? minutes : `0${minutes}`}m`;
+  return `${hours === 0 ? "" : `${hours}h`} ${minutes === 0 ? "" : `${minutes}m`}`;
+};
+const action = new PlugIn.Action(() => {
+  const rangeStart = dateFromString("today");
+  const rangeEnd = dateFromString("tomorrow");
+  const todayTasks = flattenedTasks.filter(({ effectiveDueDate, taskStatus, flagged }) => taskStatus !== Task.Status.Completed && (effectiveDueDate > rangeStart && effectiveDueDate < rangeEnd || flagged === true));
+  const { todayActiveTime, flaggedTime, todayUnavailableTime } = todayTasks.reduce(
+    ({ todayActiveTime: todayActiveTime2, flaggedTime: flaggedTime2, todayUnavailableTime: todayUnavailableTime2 }, { estimatedMinutes, flagged, taskStatus }) => ({
+      todayActiveTime: todayActiveTime2 + (!flagged && taskStatus === Task.Status.DueSoon ? estimatedMinutes : 0),
+      todayUnavailableTime: todayUnavailableTime2 + (!flagged && taskStatus !== Task.Status.DueSoon ? estimatedMinutes : 0),
+      flaggedTime: flaggedTime2 + (flagged ? estimatedMinutes : 0)
+    }),
+    { todayActiveTime: 0, flaggedTime: 0, todayUnavailableTime: 0 }
+  );
+  const message = `
+    Available: ${formatMinutesToHours(todayActiveTime, "withZeros")}
+    Remaining: ${formatMinutesToHours(todayUnavailableTime, "withZeros")}
+    Tagged: ${formatMinutesToHours(flaggedTime, "withZeros")}
+  `;
+  const totalTime = todayActiveTime + todayUnavailableTime;
+  const alert = new Alert(`Time left today: ${formatMinutesToHours(totalTime, "withZeros")}`, message);
+  alert.show(null);
+});
+action.validate = () => true;
+
+return action;
+})();
