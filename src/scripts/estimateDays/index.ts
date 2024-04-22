@@ -54,7 +54,6 @@ const predefinedDates = {
 const predefinedDatesOptions = Object.keys(predefinedDates);
 
 const action = new PlugIn.Action(async () => {
-
   if (app.optionKeyDown) {
     await settings();
     return;

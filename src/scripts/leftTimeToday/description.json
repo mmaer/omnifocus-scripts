@@ -1,0 +1,13 @@
+{
+	"type": "action",
+	"targets": ["omnifocus"],
+	"author": "Kamil Kruczek",
+	"identifier": "kamil.kruczek.leftTimeToday",
+	"version": "1.0.0",
+	"description": "Get information about how much time is left today",
+	"label": "Left time today",
+	"mediumLabel": "Left time today",
+  "longLabel": "Left time today",
+  "paletteLabel": "Left time today",
+  "image": "clock.arrow.circlepath"
+}
