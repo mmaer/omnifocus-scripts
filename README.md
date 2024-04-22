@@ -8,6 +8,7 @@
 [Estimate Time](./scripts/estimateTime)\
 [Linking](./scripts/linking/)\
 [Update Dates And Time](./scripts/updateDatesAndTime/)
+[Left Time Today](./scripts/leftTimeToday/)
 
 If you have any issue or suggestion to update existing plug-in or create the new one. Feel free to reach me out.
 
