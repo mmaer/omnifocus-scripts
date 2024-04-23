@@ -2,12 +2,14 @@
 
 [Github repo](https://github.com/mmaer/omnifocus-scripts)
 
+Each plug-in you can be installed by clicking in `Install plugin` link in the plugin ([see more](https://omni-automation.com/plugins/install-links.html)).
+
 ## Plug-Ins 
 
 [Estimate Days](./scripts/estimateDays)\
 [Estimate Time](./scripts/estimateTime)\
 [Linking](./scripts/linking/)\
-[Update Dates And Time](./scripts/updateDatesAndTime/)
+[Update Dates And Time](./scripts/updateDatesAndTime/)\
 [Left Time Today](./scripts/leftTimeToday/)
 
 If you have any issue or suggestion to update existing plug-in or create the new one. Feel free to reach me out.

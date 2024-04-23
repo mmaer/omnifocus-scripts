@@ -25,7 +25,7 @@ const action = new PlugIn.Action(() => {
 
   const totalTime = todayActiveTime + todayUnavailableTime;
 
-  const alert = new Alert(`Time left today: ${formatMinutesToHours(totalTime, 'withZeros')}`, message);
+  const alert = new Alert(`Total time left: ${formatMinutesToHours(totalTime, 'withZeros')}`, message);
   alert.show(null);
 });
 
