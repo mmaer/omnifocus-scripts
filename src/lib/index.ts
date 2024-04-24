@@ -42,17 +42,18 @@ export const getRangeOfDatesBetween = (date1: Date | string, date2: Date | strin
   return dateArray;
 };
 
-export const createDateComponent = ({ day, hour, minute }: { day?: number, hour?: number, minute?: number }) => {
+export const createDateComponent = ({ month, day, hour, minute }: { month?: number, day?: number, hour?: number, minute?: number }) => {
   const dc = new DateComponents();
+  if (month) dc.month = month;
   if (day) dc.day = day;
   if (hour) dc.hour = hour;
   if (minute) dc.minute = minute;
   return dc;
 };
 
-export const shiftDateBy = (date: Date | null, shiftDate: { day: number, hour: number, minute: number }) => {
+export const shiftDateBy = (date: Date | Formatter.Date | null, shiftDate: { month?: number, day?: number, hour?: number, minute?: number }) => {
   if (date === null) return;
-  return cal.dateByAddingDateComponents(date, createDateComponent(shiftDate));
+  return cal.dateByAddingDateComponents(date as unknown as Date, createDateComponent(shiftDate));
 };
 
 export const setIconInLoadingState = (sender: ToolbarItem) => {

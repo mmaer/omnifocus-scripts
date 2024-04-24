@@ -1,5 +1,5 @@
-import { dateFromString, formatMinutesToHours, getRangeOfDatesBetween, addDays } from '../../lib';
-import { settings, getTotalTimeToEstimate } from './settings';
+import { dateFromString, formatMinutesToHours, getRangeOfDatesBetween, addDays, shiftDateBy } from '../../lib';
+import { settings, getTotalTimeToEstimate, getShowDaysWithNoTime } from './settings';
 
 const OPTIONS = {
   morningStartTime: '00:00',
@@ -48,25 +48,35 @@ const predefinedDates = {
   ['This week']: {
     startDate: dateFromString('this monday'),
     endDate: dateFromString('next sunday'),
+  },
+  ['Next month']: {
+    startDate: dateFromString('next month'),
+    endDate: shiftDateBy(dateFromString('next month'), { month: 1, day: -1 }),
+  },
+  ['This month']: {
+    startDate: dateFromString('this month'),
+    endDate: shiftDateBy(dateFromString('next month'), { day: -1 }),
   }
-} as { [k: string]: { startDate: Formatter.Date, endDate: Formatter.Date } } ;
+} as { [k: string]: { startDate: Formatter.Date | Date, endDate: Formatter.Date | Date } } ;
 
 const predefinedDatesOptions = Object.keys(predefinedDates);
+const predefinedDatesKeys = Object.keys(predefinedDates).map((_, index) => index);
 
 const action = new PlugIn.Action(async () => {
   if (app.optionKeyDown) {
     await settings();
     return;
   }
-
   const { morningStartTime, morningEndTime, afternoonStartTime, afternoonEndTime, eveningStartTime, eveningEndTime } = OPTIONS;
   const totalTimeToEstimate = getTotalTimeToEstimate();
+  const showDaysWithNoTime = getShowDaysWithNoTime();
+
   const fmtr = Formatter.Date.withStyle(Formatter.Date.Style.Short, null);
   const inputForm = new Form();
   const startDateField = new Form.Field.Date('startDate', 'Start date', null, fmtr);
   const endDateField = new Form.Field.Date('endDate', 'End date', null, fmtr);
 
-  const predefinedDatesField = new Form.Field.Option('predefinedDatesIndex', 'Predefined dates', [0, 1], predefinedDatesOptions, 0, null);
+  const predefinedDatesField = new Form.Field.Option('predefinedDatesIndex', 'Predefined dates', predefinedDatesKeys, predefinedDatesOptions, 0, null);
 
   inputForm.addField(predefinedDatesField, null);
   inputForm.addField(startDateField, null);
@@ -118,28 +128,33 @@ const action = new PlugIn.Action(async () => {
   }, rangeOfDates);
 
   let totalTime = 0;
-  const estimatedTimeDesc = Object.keys(days).map(day => {
-    const totalDayTime = formatMinutesToHours(days[day].totalTime, 'withZeros');
-    totalTime += days[day].totalTime;
+  const estimatedTimeDesc = Object.keys(days)
+    .map(day => {
+      if (!showDaysWithNoTime && days[day].totalTime === 0) return '';
+      const totalDayTime = formatMinutesToHours(days[day].totalTime, 'withZeros');
+      totalTime += days[day].totalTime;
 
-    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalDayTime}`;
-  });
+      return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalDayTime}`;
+    })
+    .filter(e => e);
 
   let totalLeftTime = 0;
-  const leftTimeDaysDesc = Object.keys(days).map(day => {
-    const totalDayLeftTime = totalTimeToEstimate - days[day].totalTime;
+  const leftTimeDaysDesc = Object.keys(days)
+    .map(day => {
+      const totalDayLeftTime = totalTimeToEstimate - days[day].totalTime;
 
-    const totalTime = totalDayLeftTime > 0 ? formatMinutesToHours(totalDayLeftTime, 'withZeros') : '';
-    totalLeftTime += totalDayLeftTime > 0 ? totalDayLeftTime : 0;
-    
-    if (!totalTime) return '';
+      const totalTime = totalDayLeftTime > 0 ? formatMinutesToHours(totalDayLeftTime, 'withZeros') : '';
+      totalLeftTime += totalDayLeftTime > 0 ? totalDayLeftTime : 0;
+      
+      if (!totalTime) return '';
 
-    return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime}`;
-  });
+      return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime}`;
+    })
+    .filter(e => e);
 
   const totalTimeDesc = `Total time: ${formatMinutesToHours(totalTime, 'withZeros')}`;
   const totalLeftTimeDesc = `Total left time: ${formatMinutesToHours(totalLeftTime, 'withZeros')}`;
-  const leftTimeDesc = totalTimeToEstimate ? `Left time to estimate (per day ${formatMinutesToHours(totalTimeToEstimate, 'withZeros')}):\n${leftTimeDaysDesc.filter(e => e).join('\n')}\n${totalLeftTimeDesc}` : '';
+  const leftTimeDesc = totalTimeToEstimate ? `Left time to estimate (per day ${formatMinutesToHours(totalTimeToEstimate, 'withZeros')}):\n${leftTimeDaysDesc.join('\n')}\n${totalLeftTimeDesc}` : '';
 
   const desc = `${estimatedTimeDesc.join('\n')}\n${totalTimeDesc}\n\n${leftTimeDesc}`;
 
