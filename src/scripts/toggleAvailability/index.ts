@@ -4,7 +4,7 @@ import { getValueForRule, isBuildInPerspective, setValueForRule } from '../../li
 const RULE_NAME = 'actionAvailability';
 const LABEL = 'Toggle availability';
 
-const action = new PlugIn.Action(({ window }: Selection, sender: ToolbarItem) => {  
+const action = new PlugIn.Action(({ window }: Selection, sender: ToolbarItem) => {
   const customPerspective = Perspective.Custom.byName(window.perspective.name);
   const valueRule = getValueForRule(customPerspective, RULE_NAME);
 
@@ -24,11 +24,11 @@ action.validate = ({ window }: Selection, sender: ToolbarItem) => {
   const customPerspective = Perspective.Custom.byName(window.perspective.name);
   const valueRule = getValueForRule(customPerspective, RULE_NAME);
 
-  if (valueRule[RULE_NAME]  === 'remaining') {
+  if (valueRule[RULE_NAME] === 'remaining') {
     changeIcon(sender, `${LABEL} - available`, 'circle');
   } else {
     changeIcon(sender, `${LABEL} - remaining`, 'circle.fill');
   }
-  
+
   return true;
 };

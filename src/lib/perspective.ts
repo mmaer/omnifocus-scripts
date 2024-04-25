@@ -6,27 +6,27 @@ export const isBuildInPerspective = (name: Perspective.BuiltIn) => Perspective.B
 
 export const setValueForRule = (perspective: Perspective.Custom, ruleName: string, ruleValue: string | boolean | number) => {
   const rulesObjArray = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
-	let didChange = false;
+  let didChange = false;
 
-	for (const rulesObj of rulesObjArray) {
-		if (rulesObj[ruleName] !== undefined) {
+  for (const rulesObj of rulesObjArray) {
+    if (rulesObj[ruleName] !== undefined) {
       rulesObj[ruleName] = ruleValue;
-			didChange = true;
-			break;
-		}
-	}
+      didChange = true;
+      break;
+    }
+  }
 
-	if (!didChange) rulesObjArray.push({ [ruleName]: ruleValue });
-	
-	perspective.archivedFilterRules = rulesObjArray;
+  if (!didChange) rulesObjArray.push({ [ruleName]: ruleValue });
+
+  perspective.archivedFilterRules = rulesObjArray;
 };
 
-export const getValueForRule = (perspective: Perspective.Custom, ruleName: string) => 
+export const getValueForRule = (perspective: Perspective.Custom, ruleName: string) =>
   perspective.archivedFilterRules.find((rulesObj: RuleObj) => rulesObj[ruleName] !== undefined) || {};
 
 export const deleteValueForRule = (perspective: Perspective.Custom, ruleName: string) => {
   const rulesObjArray = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
   const updatedRules = rulesObjArray.filter((rulesObj: RuleObj) => rulesObj[ruleName] === undefined);
-	
-	perspective.archivedFilterRules = updatedRules;
+
+  perspective.archivedFilterRules = updatedRules;
 };

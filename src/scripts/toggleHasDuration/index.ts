@@ -3,7 +3,7 @@ import { getValueForRule, deleteValueForRule, setValueForRule, isBuildInPerspect
 
 const RULE_NAME = 'actionHasDuration';
 
-const action = new PlugIn.Action(({ window }: Selection, sender: ToolbarItem) => {  
+const action = new PlugIn.Action(({ window }: Selection, sender: ToolbarItem) => {
   const customPerspective = Perspective.Custom.byName(window.perspective.name);
   const valueRule = getValueForRule(customPerspective, RULE_NAME);
 
@@ -28,6 +28,6 @@ action.validate = ({ window }: Selection, sender: ToolbarItem) => {
   } else {
     changeIcon(sender, 'Toggle has duration - disabled', 'deskclock');
   }
-  
+
   return true;
 };
