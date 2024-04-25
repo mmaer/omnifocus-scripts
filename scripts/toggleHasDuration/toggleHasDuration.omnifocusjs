@@ -1,0 +1,71 @@
+/*{
+    "author": "Kamil Kruczek",
+    "targets": ["omnifocus"],
+    "type": "action",
+    "identifier": "kamil.kruczek.toggleHasDurationRule",
+    "version": "1.0.0",
+    "description": "Toggle 'has an estimated duration' rule in a custom perspective.",
+    "label": "Toggle has duration rule",
+    "shortLabel": "Toggle has duration rule",
+    "mediumLabel": "Toggle has duration rule",
+    "longLabel": "Toggle has duration rule",
+    "paletteLabel": "Toggle has duration rule",
+    "image": "deskclock"
+}*/
+(() => {
+Calendar.current;
+Formatter.Date.withStyle(Formatter.Date.Style.Short, null);
+const changeIcon = (sender, label, iconName) => {
+  sender.label = label;
+  sender.toolTip = label;
+  sender.image = Image.symbolNamed(iconName);
+};
+const isBuildInPerspective = (name) => Perspective.BuiltIn.all.includes(name);
+const setValueForRule = (perspective, ruleName, ruleValue) => {
+  const rulesObjArray = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
+  let didChange = false;
+  for (const rulesObj of rulesObjArray) {
+    if (rulesObj[ruleName] !== void 0) {
+      rulesObj[ruleName] = ruleValue;
+      didChange = true;
+      break;
+    }
+  }
+  if (!didChange)
+    rulesObjArray.push({ [ruleName]: ruleValue });
+  perspective.archivedFilterRules = rulesObjArray;
+};
+const getValueForRule = (perspective, ruleName) => perspective.archivedFilterRules.find((rulesObj) => rulesObj[ruleName] !== void 0) || {};
+const deleteValueForRule = (perspective, ruleName) => {
+  const rulesObjArray = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
+  const updatedRules = rulesObjArray.filter((rulesObj) => rulesObj[ruleName] === void 0);
+  perspective.archivedFilterRules = updatedRules;
+};
+const RULE_NAME = "actionHasDuration";
+const action = new PlugIn.Action(({ window }, sender) => {
+  const customPerspective = Perspective.Custom.byName(window.perspective.name);
+  const valueRule = getValueForRule(customPerspective, RULE_NAME);
+  if (valueRule[RULE_NAME]) {
+    deleteValueForRule(customPerspective, RULE_NAME);
+    changeIcon(sender, "Toggle has duration - disabled", "deskclock");
+  } else {
+    setValueForRule(customPerspective, RULE_NAME, true);
+    changeIcon(sender, "Toggle has duration - enabled", "deskclock.fill");
+  }
+});
+action.validate = ({ window }, sender) => {
+  const buildInPerspective = isBuildInPerspective(window.perspective);
+  if (buildInPerspective)
+    return false;
+  const customPerspective = Perspective.Custom.byName(window.perspective.name);
+  const valueRule = getValueForRule(customPerspective, RULE_NAME);
+  if (valueRule[RULE_NAME]) {
+    changeIcon(sender, "Toggle has duration - enabled", "deskclock.fill");
+  } else {
+    changeIcon(sender, "Toggle has duration - disabled", "deskclock");
+  }
+  return true;
+};
+
+return action;
+})();
