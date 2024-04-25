@@ -21,21 +21,21 @@ const changeIcon = (sender, label, iconName) => {
   sender.image = Image.symbolNamed(iconName);
 };
 const isBuildInPerspective = (name) => Perspective.BuiltIn.all.includes(name);
-const setValueForRule = (perspective, ruleName, ruleValue) => {
-  const rulesObjArray = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
-  let didChange = false;
-  for (const rulesObj of rulesObjArray) {
-    if (rulesObj[ruleName] !== void 0) {
-      rulesObj[ruleName] = ruleValue;
-      didChange = true;
+const setValueForRule = (perspective, name, value) => {
+  const rules = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
+  let foundRule = false;
+  for (const rule of rules) {
+    if (rule[name] !== void 0) {
+      rule[name] = value;
+      foundRule = true;
       break;
     }
   }
-  if (!didChange)
-    rulesObjArray.push({ [ruleName]: ruleValue });
-  perspective.archivedFilterRules = rulesObjArray;
+  if (!foundRule)
+    rules.push({ [name]: value });
+  perspective.archivedFilterRules = rules;
 };
-const getValueForRule = (perspective, ruleName) => perspective.archivedFilterRules.find((rulesObj) => rulesObj[ruleName] !== void 0) || {};
+const getValueForRule = (perspective, name) => perspective.archivedFilterRules.find((rule) => rule[name] !== void 0) || {};
 const RULE_NAME = "actionAvailability";
 const LABEL = "Toggle availability";
 const action = new PlugIn.Action(({ window }, sender) => {

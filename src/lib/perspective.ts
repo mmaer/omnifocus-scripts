@@ -1,32 +1,34 @@
-type RuleObj = {
-  [key: string]: string | boolean | number
+type Value = string | boolean | number
+
+type Rule = {
+  [key: string]: Value
 }
 
 export const isBuildInPerspective = (name: Perspective.BuiltIn) => Perspective.BuiltIn.all.includes(name);
 
-export const setValueForRule = (perspective: Perspective.Custom, ruleName: string, ruleValue: string | boolean | number) => {
-  const rulesObjArray = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
-  let didChange = false;
+export const setValueForRule = (perspective: Perspective.Custom, name: string, value: Value) => {
+  const rules = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
+  let foundRule = false;
 
-  for (const rulesObj of rulesObjArray) {
-    if (rulesObj[ruleName] !== undefined) {
-      rulesObj[ruleName] = ruleValue;
-      didChange = true;
+  for (const rule of rules) {
+    if (rule[name] !== undefined) {
+      rule[name] = value;
+      foundRule = true;
       break;
     }
   }
 
-  if (!didChange) rulesObjArray.push({ [ruleName]: ruleValue });
+  if (!foundRule) rules.push({ [name]: value });
 
-  perspective.archivedFilterRules = rulesObjArray;
+  perspective.archivedFilterRules = rules;
 };
 
-export const getValueForRule = (perspective: Perspective.Custom, ruleName: string) =>
-  perspective.archivedFilterRules.find((rulesObj: RuleObj) => rulesObj[ruleName] !== undefined) || {};
+export const getValueForRule = (perspective: Perspective.Custom, name: string) =>
+  perspective.archivedFilterRules.find((rule: Rule) => rule[name] !== undefined) || {};
 
-export const deleteValueForRule = (perspective: Perspective.Custom, ruleName: string) => {
-  const rulesObjArray = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
-  const updatedRules = rulesObjArray.filter((rulesObj: RuleObj) => rulesObj[ruleName] === undefined);
+export const deleteValueForRule = (perspective: Perspective.Custom, name: string) => {
+  const rules = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
+  const updatedRules = rules.filter((rule: Rule) => rule[name] === undefined);
 
   perspective.archivedFilterRules = updatedRules;
 };
