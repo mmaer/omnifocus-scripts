@@ -1,0 +1,14 @@
+{
+    "author": "Kamil Kruczek",
+    "targets": ["omnifocus"],
+    "type": "action",
+    "identifier": "kamil.kruczek.toggleHasDurationRule",
+    "version": "1.0.0",
+    "description": "Toggle 'has an estimated duration' rule in a custom perspective.",
+    "label": "Toggle has duration rule",
+    "shortLabel": "Toggle has duration rule",
+    "mediumLabel": "Toggle has duration rule",
+    "longLabel": "Toggle has duration rule",
+    "paletteLabel": "Toggle has duration rule",
+    "image": "deskclock"
+}

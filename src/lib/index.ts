@@ -54,3 +54,15 @@ export const shiftDateBy = (date: Date | null, shiftDate: { day: number, hour: n
   if (date === null) return;
   return cal.dateByAddingDateComponents(date, createDateComponent(shiftDate));
 };
+
+export const setIconInLoadingState = (sender: ToolbarItem) => {
+  sender.label = 'Loading...';
+  sender.toolTip = 'Loading...';
+  sender.image = Image.symbolNamed('arrow.circlepath');
+};
+
+export const changeIcon = (sender: ToolbarItem, label: string, iconName: string) => {
+  sender.label = label;
+  sender.toolTip = label;
+  sender.image = Image.symbolNamed(iconName);
+};

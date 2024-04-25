@@ -1,0 +1,14 @@
+{
+    "author": "Kamil Kruczek",
+    "targets": ["omnifocus"],
+    "type": "action",
+    "identifier": "kamil.kruczek.toggleAvailabilityRule",
+    "version": "1.0.0",
+    "description": "Toggle 'availability' action in a custom perspective. Yu can change from 'Available' to 'Remaining' and vice versa.",
+    "label": "Toggle availability rule",
+    "shortLabel": "Toggle availability",
+    "mediumLabel": "Toggle availability rule",
+    "longLabel": "Toggle availability rule from Available to Remaining and vice versa",
+    "paletteLabel": "Toggle availability rule",
+    "image": "circle"
+}

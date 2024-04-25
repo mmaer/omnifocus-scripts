@@ -220,11 +220,23 @@ declare class Data {
     readonly toObject: Object | null;
 }
 
+// Error
+
+declare class OmniError {
+    readonly causedByUserCancelling: boolean;
+    readonly name: string;
+    readonly message: string;
+}
+
 // Database
 
 declare const flattenedTasks: TaskArray;
 
 declare const app: Application;
+declare const flattenedTags: TagArray;
+declare const flattenedProjects: ProjectArray;
+
+declare const moveTasks: (tasks: Array<Task>, position: Project | Task | Task.ChildInsertionLocation) => void;
 
 declare class Database {
     tagNamed(name: string): Tag | null;
@@ -427,6 +439,7 @@ declare namespace Perspective {
         writeFileRepresentationIntoDirectory(parentURL: URL): URL;
         readonly identifier: string;
         readonly name: string;
+        archivedFilterRules: { [key: string]: string | boolean | number }[];
     }
 }
 
@@ -657,6 +670,7 @@ declare namespace FileWrapper {
 
 declare class FileWrapper {
     filenameForChild(child: FileWrapper): string | null;
+    write(url: URL, options: Array<FileWrapper.WritingOptions> | null, originalContentsURL: URL | null);
     readonly children: Array<FileWrapper>;
     readonly contents: Data | null;
     readonly destination: URL | null;
@@ -677,6 +691,12 @@ declare namespace FileWrapper.Type {
 declare namespace FileWrapper {
     class Type {
     }
+}
+
+// FileWrapper.WritingOptions
+
+declare namespace FileWrapper.WritingOptions {
+    const Atomic: FileWrapper.WritingOptions;
 }
 
 // Folder.ChildInsertionLocation
@@ -895,7 +915,12 @@ declare namespace Formatter.Date {
 
 // Image
 
+declare namespace Image {
+    function symbolNamed(name: string): Image | null;
+}
+
 declare class Image {
+    symbolNamed(s: string): void;
 }
 
 // LigatureStyle
@@ -1569,6 +1594,7 @@ declare namespace URL {
     function tellScript(app: string, js: string, arg: Object | null): URL | null;
     function tellFunction(app: string, jsFunction: Function, arg: Object | null): URL | null;
     const currentAppScheme: string;
+    const documentsDirectory: URL;
 }
 
 declare class URL {
@@ -1581,6 +1607,7 @@ declare class URL {
     deletingLastPathComponent(): URL;
     readonly string: string;
     readonly toObject: Object | null;
+    readonly documentsDirectory: URL;
 }
 
 // URL.Access
