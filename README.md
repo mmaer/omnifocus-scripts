@@ -12,6 +12,10 @@ Each plug-in you can be installed by clicking in `Install plugin` link in the pl
 [Update Dates And Time](./scripts/updateDatesAndTime/)\
 [Left Time Today](./scripts/leftTimeToday/)
 
+### Toggles
+[Toggle Availability](./scripts/toggleAvailability)\
+[Toggle Has Duration](./scripts/toggleHasDuration)
+
 If you have any issue or suggestion to update existing plug-in or create the new one. Feel free to reach me out.
 
 ## Contact
