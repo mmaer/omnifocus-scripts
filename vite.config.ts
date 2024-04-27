@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import eslint from 'vite-plugin-eslint';
 import copy from 'rollup-plugin-copy';
-import { viteZip } from 'vite-plugin-zip-file';
+import zipPack from 'vite-plugin-zip-pack';
 
 const { SCRIPT = '' } = process.env;
 
@@ -45,11 +45,11 @@ export default defineConfig({
             { src: `${scriptDir}${SCRIPT}/assets/*`, dest: `scripts/${SCRIPT}/assets` }
           ]
         }),
-        viteZip({
-          folderPath: path.resolve(__dirname, `scripts/${SCRIPT}`),
-          outPath: path.resolve(__dirname, `scripts/${SCRIPT}`),
-          zipName: `${SCRIPT}.zip`,
-          enabled: true
+        zipPack({
+          inDir: path.resolve(__dirname, `scripts/${SCRIPT}`),
+          outDir: path.resolve(__dirname, `scripts/${SCRIPT}`),
+          outFileName: `${SCRIPT}.zip`,
+          filter: (fileName) => fileName === `${SCRIPT}.${omniFocusExtension}`
         })
       ]
     }
