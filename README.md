@@ -24,7 +24,7 @@ Mail: kamilkruczek0@gmail.com\
 Omni Group Slack: Kamil Kruczek\
 Omni Forums: kamilkruczek
 
-## Set up projects
+## Set up project
 
 ### Prerequisites
 - Installed node
