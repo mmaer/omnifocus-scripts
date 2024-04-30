@@ -1,5 +1,5 @@
-import { dateFromString, formatMinutesToHours, getRangeOfDatesBetween, addDays, shiftDateBy } from '../../lib';
-import { settings, getTotalTimeToEstimate, getShowDaysWithNoTime } from './settings';
+import { dateFromString, formatMinutesToHours, getRangeOfDatesBetween, addDays, shiftDateBy, isSunday } from '../../lib';
+import { settings, getTotalTimeToEstimate, getShowDaysWithNoTime, getShowSundays } from './settings';
 
 const OPTIONS = {
   morningStartTime: '00:00',
@@ -70,17 +70,16 @@ const action = new PlugIn.Action(async () => {
   const { morningStartTime, morningEndTime, afternoonStartTime, afternoonEndTime, eveningStartTime, eveningEndTime } = OPTIONS;
   const totalTimeToEstimate = getTotalTimeToEstimate();
   const showDaysWithNoTime = getShowDaysWithNoTime();
+  const showSundays = getShowSundays();
 
   const fmtr = Formatter.Date.withStyle(Formatter.Date.Style.Short, null);
   const inputForm = new Form();
-  const startDateField = new Form.Field.Date('startDate', 'Start date', null, fmtr);
-  const endDateField = new Form.Field.Date('endDate', 'End date', null, fmtr);
 
   const predefinedDatesField = new Form.Field.Option('predefinedDatesIndex', 'Predefined dates', predefinedDatesKeys, predefinedDatesOptions, 0, null);
 
   inputForm.addField(predefinedDatesField, null);
-  inputForm.addField(startDateField, null);
-  inputForm.addField(endDateField, null);
+  inputForm.addField(new Form.Field.Date('startDate', 'Start date', null, fmtr), null);
+  inputForm.addField(new Form.Field.Date('endDate', 'End date', null, fmtr), null);
 
   const { values: { startDate, endDate, predefinedDatesIndex } } = await inputForm.show('Select date range', 'Ok');
 
@@ -129,6 +128,7 @@ const action = new PlugIn.Action(async () => {
 
   let totalTime = 0;
   const estimatedTimeDesc = Object.keys(days)
+    .filter(day => isSunday(day) ? showSundays : true)
     .map(day => {
       if (!showDaysWithNoTime && days[day].totalTime === 0) return '';
       const totalDayTime = formatMinutesToHours(days[day].totalTime, 'withZeros');
@@ -140,6 +140,7 @@ const action = new PlugIn.Action(async () => {
 
   let totalLeftTime = 0;
   const leftTimeDaysDesc = Object.keys(days)
+    .filter(day => isSunday(day) ? showSundays : true)
     .map(day => {
       const totalDayLeftTime = totalTimeToEstimate - days[day].totalTime;
 

@@ -67,3 +67,5 @@ export const changeIcon = (sender: ToolbarItem, label: string, iconName: string)
   sender.toolTip = label;
   sender.image = Image.symbolNamed(iconName);
 };
+
+export const isSunday = (day: string) =>  new Date(day).getDay() === 0;
