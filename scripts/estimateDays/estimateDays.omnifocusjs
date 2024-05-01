@@ -3,7 +3,7 @@
   "targets": ["omnifocus"],
   "type": "action",
   "identifier": "kamil.kruczek.estimateDays",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Select a predefined date range or select your ones to get an estimated time in the given date range.",
   "label": "Estimate days",
   "mediumLabel": "Estimate days",
@@ -37,8 +37,10 @@ const getRangeOfDatesBetween = (date1, date2) => {
   }
   return dateArray;
 };
-const createDateComponent = ({ day, hour, minute }) => {
+const createDateComponent = ({ month, day, hour, minute }) => {
   const dc = new DateComponents();
+  if (month)
+    dc.month = month;
   if (day)
     dc.day = day;
   if (hour)
@@ -47,23 +49,45 @@ const createDateComponent = ({ day, hour, minute }) => {
     dc.minute = minute;
   return dc;
 };
+const shiftDateBy = (date, shiftDate) => {
+  if (date === null)
+    return;
+  return cal.dateByAddingDateComponents(date, createDateComponent(shiftDate));
+};
+const isSunday = (day) => new Date(day).getDay() === 0;
 const DEFAULT_TOTAL_TIME_TO_ESTIMATE = 0;
+const TOTAL_TIME_TO_ESTIMATE = "total-time-to-estimate";
+const SHOW_DAYS_WITH_NO_TIME = "show-days-with-no-time";
+const SHOW_SUNDAYS = "show-sundays";
 const preferences = new Preferences("estimate-days-settings");
-const getTotalTimeToEstimate = () => preferences.readNumber("total-time-to-estimate") || DEFAULT_TOTAL_TIME_TO_ESTIMATE;
+const getTotalTimeToEstimate = () => preferences.readNumber(TOTAL_TIME_TO_ESTIMATE) || DEFAULT_TOTAL_TIME_TO_ESTIMATE;
+const getShowDaysWithNoTime = () => preferences.readBoolean(SHOW_DAYS_WITH_NO_TIME);
+const getShowSundays = () => preferences.readBoolean(SHOW_SUNDAYS);
 const settings = async () => {
   const inputForm = new Form();
-  const totalTimeToEstimateInput = new Form.Field.String(
+  inputForm.addField(new Form.Field.String(
     "totalTimeToEstimatePerDay",
-    "Time in minutes to estimate per day",
+    "Time(minutes) to estimate per day",
     getTotalTimeToEstimate(),
     null
-  );
-  inputForm.addField(totalTimeToEstimateInput, null);
+  ), null);
+  inputForm.addField(new Form.Field.Checkbox(
+    "showDaysWithNoTime",
+    "Show days with 0 minutes",
+    getShowDaysWithNoTime()
+  ), null);
+  inputForm.addField(new Form.Field.Checkbox(
+    "showSundays",
+    "Show sundays",
+    getShowSundays()
+  ), null);
   inputForm.validate = ({ values: { totalTimeToEstimatePerDay: totalTimeToEstimatePerDay2 } }) => {
     return !isNaN(parseInt(totalTimeToEstimatePerDay2));
   };
-  const { values: { totalTimeToEstimatePerDay } } = await inputForm.show("Settings", "Save");
-  preferences.write("total-time-to-estimate", parseInt(totalTimeToEstimatePerDay));
+  const { values: { totalTimeToEstimatePerDay, showDaysWithNoTime, showSundays } } = await inputForm.show("Settings", "Save");
+  preferences.write(TOTAL_TIME_TO_ESTIMATE, parseInt(totalTimeToEstimatePerDay));
+  preferences.write(SHOW_DAYS_WITH_NO_TIME, showDaysWithNoTime);
+  preferences.write(SHOW_SUNDAYS, showSundays);
 };
 const OPTIONS = {
   morningStartTime: "00:00",
@@ -101,9 +125,18 @@ const predefinedDates = {
   ["This week"]: {
     startDate: dateFromString("this monday"),
     endDate: dateFromString("next sunday")
+  },
+  ["Next month"]: {
+    startDate: dateFromString("next month"),
+    endDate: shiftDateBy(dateFromString("next month"), { month: 1, day: -1 })
+  },
+  ["This month"]: {
+    startDate: dateFromString("this month"),
+    endDate: shiftDateBy(dateFromString("next month"), { day: -1 })
   }
 };
 const predefinedDatesOptions = Object.keys(predefinedDates);
+const predefinedDatesKeys = Object.keys(predefinedDates).map((_, index) => index);
 const action = new PlugIn.Action(async () => {
   if (app.optionKeyDown) {
     await settings();
@@ -111,14 +144,14 @@ const action = new PlugIn.Action(async () => {
   }
   const { morningStartTime, morningEndTime, afternoonStartTime, afternoonEndTime, eveningStartTime, eveningEndTime } = OPTIONS;
   const totalTimeToEstimate = getTotalTimeToEstimate();
+  const showDaysWithNoTime = getShowDaysWithNoTime();
+  const showSundays = getShowSundays();
   const fmtr = Formatter.Date.withStyle(Formatter.Date.Style.Short, null);
   const inputForm = new Form();
-  const startDateField = new Form.Field.Date("startDate", "Start date", null, fmtr);
-  const endDateField = new Form.Field.Date("endDate", "End date", null, fmtr);
-  const predefinedDatesField = new Form.Field.Option("predefinedDatesIndex", "Predefined dates", [0, 1], predefinedDatesOptions, 0, null);
+  const predefinedDatesField = new Form.Field.Option("predefinedDatesIndex", "Predefined dates", predefinedDatesKeys, predefinedDatesOptions, 0, null);
   inputForm.addField(predefinedDatesField, null);
-  inputForm.addField(startDateField, null);
-  inputForm.addField(endDateField, null);
+  inputForm.addField(new Form.Field.Date("startDate", "Start date", null, fmtr), null);
+  inputForm.addField(new Form.Field.Date("endDate", "End date", null, fmtr), null);
   const { values: { startDate, endDate, predefinedDatesIndex } } = await inputForm.show("Select date range", "Ok");
   let startDateRange;
   let endDateRange;
@@ -159,24 +192,26 @@ const action = new PlugIn.Action(async () => {
     return prev;
   }, rangeOfDates);
   let totalTime = 0;
-  const estimatedTimeDesc = Object.keys(days).map((day) => {
+  const estimatedTimeDesc = Object.keys(days).filter((day) => isSunday(day) ? showSundays : true).map((day) => {
+    if (!showDaysWithNoTime && days[day].totalTime === 0)
+      return "";
     const totalDayTime = formatMinutesToHours(days[day].totalTime, "withZeros");
     totalTime += days[day].totalTime;
     return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalDayTime}`;
-  });
+  }).filter((e) => e);
   let totalLeftTime = 0;
-  const leftTimeDaysDesc = Object.keys(days).map((day) => {
+  const leftTimeDaysDesc = Object.keys(days).filter((day) => isSunday(day) ? showSundays : true).map((day) => {
     const totalDayLeftTime = totalTimeToEstimate - days[day].totalTime;
     const totalTime2 = totalDayLeftTime > 0 ? formatMinutesToHours(totalDayLeftTime, "withZeros") : "";
     totalLeftTime += totalDayLeftTime > 0 ? totalDayLeftTime : 0;
     if (!totalTime2)
       return "";
     return `${new Date(day).toLocaleDateString().slice(0, -5)}: ${totalTime2}`;
-  });
+  }).filter((e) => e);
   const totalTimeDesc = `Total time: ${formatMinutesToHours(totalTime, "withZeros")}`;
   const totalLeftTimeDesc = `Total left time: ${formatMinutesToHours(totalLeftTime, "withZeros")}`;
   const leftTimeDesc = totalTimeToEstimate ? `Left time to estimate (per day ${formatMinutesToHours(totalTimeToEstimate, "withZeros")}):
-${leftTimeDaysDesc.filter((e) => e).join("\n")}
+${leftTimeDaysDesc.join("\n")}
 ${totalLeftTimeDesc}` : "";
   const desc = `${estimatedTimeDesc.join("\n")}
 ${totalTimeDesc}

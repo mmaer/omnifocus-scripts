@@ -16,8 +16,12 @@ By pressing `option` key you can define `Time in minutes to estimate per day` e.
 
 ![Estimate days settings](./assets/screenshot3.png)
 
-## In the future
+## Changelog
 
-- [ ] Add this month's predefined date option
-- [ ] Add next month's predefined date option
+### 1.2.0
+- This month in predefined dates
+- Next month in predefined dates
+- New option which show/hide days with 0 minutes
+
+## In the future
 - [ ] Estimate morning, afternoon and evening each day
