@@ -21,7 +21,8 @@ By pressing `option` key you can define `Time in minutes to estimate per day` e.
 ### 1.2.0
 - This month in predefined dates
 - Next month in predefined dates
-- New option which show/hide days with 0 minutes
+- New option: show/hide days with 0 minutes
+- New option: show/hide sundays
 
 ## In the future
 - [ ] Estimate morning, afternoon and evening each day
