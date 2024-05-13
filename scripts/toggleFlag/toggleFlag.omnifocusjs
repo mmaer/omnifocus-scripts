@@ -1,0 +1,72 @@
+/*{
+    "author": "Kamil Kruczek",
+    "targets": ["omnifocus"],
+    "type": "action",
+    "identifier": "kamil.kruczek.toggleFlag",
+    "version": "1.0.0",
+    "description": "Toggle flag rule in a custom perspective.",
+    "label": "Toggle flag rule",
+    "shortLabel": "Toggle flag  rule",
+    "mediumLabel": "Toggle flag rule",
+    "longLabel": "Toggle flag rule",
+    "paletteLabel": "Toggle flag rule",
+    "image": "deskclock"
+}*/
+(() => {
+Calendar.current;
+Formatter.Date.withStyle(Formatter.Date.Style.Short, null);
+const changeIcon = (sender, label, iconName) => {
+  sender.label = label;
+  sender.toolTip = label;
+  sender.image = Image.symbolNamed(iconName);
+};
+const isBuildInPerspective = (name) => Perspective.BuiltIn.all.includes(name);
+const setValueForRule = (perspective, name, value) => {
+  const rules = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
+  let foundRule = false;
+  for (const rule of rules) {
+    if (rule[name] !== void 0) {
+      rule[name] = value;
+      foundRule = true;
+      break;
+    }
+  }
+  if (!foundRule)
+    rules.push({ [name]: value });
+  perspective.archivedFilterRules = rules;
+};
+const getValueForRule = (perspective, name) => perspective.archivedFilterRules.find((rule) => rule[name] !== void 0) || {};
+const deleteValueForRule = (perspective, name) => {
+  const rules = JSON.parse(JSON.stringify(perspective.archivedFilterRules));
+  const updatedRules = rules.filter((rule) => rule[name] === void 0);
+  perspective.archivedFilterRules = updatedRules;
+};
+const RULE_NAME = "actionStatus";
+const LABEL = "Toggle Flag";
+const action = new PlugIn.Action(({ window }, sender) => {
+  const customPerspective = Perspective.Custom.byName(window.perspective.name);
+  const valueRule = getValueForRule(customPerspective, RULE_NAME);
+  if (valueRule[RULE_NAME] === "flagged") {
+    deleteValueForRule(customPerspective, RULE_NAME);
+    changeIcon(sender, `${LABEL} - flagged`, "flag.fill");
+  } else {
+    setValueForRule(customPerspective, RULE_NAME, "flagged");
+    changeIcon(sender, `${LABEL} - flagged and unflagged`, "flag.filled.and.flag.crossed");
+  }
+});
+action.validate = ({ window }, sender) => {
+  const buildInPerspective = isBuildInPerspective(window.perspective);
+  if (buildInPerspective)
+    return false;
+  const customPerspective = Perspective.Custom.byName(window.perspective.name);
+  const valueRule = getValueForRule(customPerspective, RULE_NAME);
+  if (valueRule[RULE_NAME] === "flagged") {
+    changeIcon(sender, `${LABEL} - flagged`, "flag.fill");
+  } else {
+    changeIcon(sender, `${LABEL} - flagged and unflagged`, "flag.filled.and.flag.crossed");
+  }
+  return true;
+};
+
+return action;
+})();

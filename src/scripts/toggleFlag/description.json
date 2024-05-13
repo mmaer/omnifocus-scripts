@@ -1,0 +1,14 @@
+{
+    "author": "Kamil Kruczek",
+    "targets": ["omnifocus"],
+    "type": "action",
+    "identifier": "kamil.kruczek.toggleFlag",
+    "version": "0.1.0",
+    "description": "Toggle flag rule in a custom perspective.",
+    "label": "Toggle flag rule",
+    "shortLabel": "Toggle flag  rule",
+    "mediumLabel": "Toggle flag rule",
+    "longLabel": "Toggle flag rule",
+    "paletteLabel": "Toggle flag rule",
+    "image": "flag.filled.and.flag.crossed"
+}

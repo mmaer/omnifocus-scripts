@@ -13,6 +13,7 @@
     "build:leftTimeToday": "SCRIPT=leftTimeToday vite build",
     "build:toggleHasDuration": "SCRIPT=toggleHasDuration vite build",
     "build:toggleAvailability": "SCRIPT=toggleAvailability vite build",
+    "build:toggleFlag": "SCRIPT=toggleFlag vite build",
     "copy-scripts": "bash copy-scripts.sh scripts",
     "buildAndCopy": "npm run build && npm run copy-scripts",
     "preview": "vite preview"
